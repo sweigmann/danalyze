@@ -21,10 +21,12 @@ import hashlib
 import ssdeep
 
 progname    = "danalyze"
-progver     = 0.1
+progver     = "0.1.1"
 
 
-def hash_files(dir_prefix = '', dict = {}):
+def hash_files(dir_prefix = '', dir_dict = None):
+    if dir_dict is None:
+        dir_dict = {}
     if os.path.exists(dir_prefix):
         for root, dirs, files in os.walk(dir_prefix, topdown=True, followlinks=False):
             for file in files:
@@ -33,7 +35,7 @@ def hash_files(dir_prefix = '', dict = {}):
                 relative_fpath = os.path.relpath(fpath, common_prefix)
                 with open(fpath, "rb") as f:
                     digest = hashlib.file_digest(f, "sha256")
-                dict[relative_fpath] = {'size'  :   str(os.path.getsize(fpath)),
+                dir_dict[relative_fpath] = {'size'  :   str(os.path.getsize(fpath)),
                                         'sha256':   digest.hexdigest(),
                                         'ssdeep':   ssdeep.hash_from_file(fpath)
                                         }
@@ -46,7 +48,7 @@ def main():
                                      description = "Recursive differential analysis on files")
     parser.add_argument("dir1", nargs=1)
     parser.add_argument("dir2", nargs=1)
-    parser.add_argument('--version', action='version', version='%(prog)s v' + str(progver))
+    parser.add_argument('--version', action='version', version='%(prog)s v' + progver)
     args = parser.parse_args()
     dir1_prefix = args.dir1[0]
     dir2_prefix = args.dir2[0]

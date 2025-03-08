@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools >= 72.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "danalyze"
+version = "0.1.1"
+description = "danalyze - recursive differential analysis on files"
+authors = [
+  {name = "Sebastian Weigmann", email = "seb.weigmann@gmail.com"}
+]
+maintainers = [
+  {name = "Sebastian Weigmann", email = "seb.weigmann@gmail.com"}
+]
+readme = "README.md"
+license = {file = "LICENSE"}
+dependencies = [
+  "ssdeep>=3.4"
+]
+requires-python = ">=3.8"
+
+[project.urls]
+#Homepage = "https://example.com"
+#Documentation = "https://readthedocs.org"
+Repository = "https://github.com/sweigmann/danalyze.git"
+#"Bug Tracker" = "https://github.com/me/spam/issues"
+#Changelog = "https://github.com/sweigmann/danalyze/blob/main/CHANGELOG.md"
+
+[project.scripts]
+danalyze = "danalyze.danalyze:main"

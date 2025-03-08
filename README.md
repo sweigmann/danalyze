@@ -6,6 +6,12 @@ Given two directories, `danalyze` recursively analyzes all files
 within them and computes sizes, sha256 and ssdeep hashes. 
 The CSV formatted results are dumped to the console.
 
+## installation:
+
+```bash
+pipx install git+https://github.com/sweigmann/danalyze.git
+```
+
 ## usage:
 
 ```bash
