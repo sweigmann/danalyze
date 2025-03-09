@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "danalyze"
-version = "0.1.1"
+dynamic = ["version"]
 description = "danalyze - recursive differential analysis on files"
 authors = [
   {name = "Sebastian Weigmann", email = "seb.weigmann@gmail.com"}
@@ -18,6 +18,9 @@ dependencies = [
   "ssdeep>=3.4"
 ]
 requires-python = ">=3.8"
+
+[tool.setuptools.dynamic]
+version = {attr = "danalyze.danalyze.progver"}
 
 [project.urls]
 #Homepage = "https://example.com"
