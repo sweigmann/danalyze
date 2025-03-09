@@ -29,7 +29,7 @@ import ssdeep
 from enum import IntEnum
 
 progname  = "danalyze"
-progver   = "0.2"
+progver   = "0.2.1"
 outfile   = None
 verbosity = 0
 
@@ -60,6 +60,7 @@ def printmsg(msg = '', errlvl = ERRLVL.INFNT):
 
 def hash_files(dir_prefix = '', dir_dict = None):
     global verbosity
+    bufsize = 2 ** 12 * 8
     for root, dirs, files in os.walk(dir_prefix, topdown=True, followlinks=False):
         for file in files:
             fpath = os.path.join(root, file)
@@ -72,11 +73,19 @@ def hash_files(dir_prefix = '', dir_dict = None):
             common_prefix = os.path.commonprefix([dir_prefix, fpath])
             relative_fpath = os.path.relpath(fpath, common_prefix)
             try:
+                hasher_sha256 = hashlib.sha256()
+                hasher_ssdeep = ssdeep.Hash()
                 with open(fpath, "rb") as f:
-                    digest = hashlib.file_digest(f, "sha256")
+                    chunk = f.read(bufsize)
+                    while chunk:
+                        hasher_sha256.update(chunk)
+                        hasher_ssdeep.update(chunk)
+                        chunk = f.read(bufsize)
+                digest_sha256 = hasher_sha256.hexdigest()
+                digest_ssdeep = hasher_ssdeep.digest()
                 dir_dict[relative_fpath] = {'size'  :   str(os.path.getsize(fpath)),
-                                            'sha256':   digest.hexdigest(),
-                                            'ssdeep':   ssdeep.hash_from_file(fpath)
+                                            'sha256':   digest_sha256,
+                                            'ssdeep':   digest_ssdeep
                                             }
             except Exception as expt:
                 printmsg("%s: %s" % (type(expt).__name__, expt), ERRLVL.ERROR)

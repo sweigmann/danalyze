@@ -15,7 +15,8 @@ maintainers = [
 readme = "README.md"
 license = {file = "LICENSE"}
 dependencies = [
-  "ssdeep>=3.4"
+  #"ssdeep>=3.4.1"
+  "ssdeep@git+https://github.com/DinoTools/python-ssdeep#egg=3.4.1"
 ]
 requires-python = ">=3.8"
 

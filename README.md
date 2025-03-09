@@ -1,10 +1,17 @@
 # danalyze
 
-danalyze - recursive differential analysis on files
+**danalyze - recursive differential analysis on files**
 
 Given two directories, `danalyze` recursively analyzes all files
-within them and computes sizes, sha256 and ssdeep hashes. 
-The CSV formatted results are dumped to the console.
+(and only real files) within them and computes sizes, `sha256` and 
+`ssdeep` hashes. The CSV formatted results are dumped to the console.
+
+Since `ssdeep` is about ten times slower than `sha256`, you may need 
+some patience when scanning larger directory trees.
+
+All runtime messages are written to `stderr`, while program output, 
+the hashes, are written to `stdout` or to a file if specified.
+
 
 ## installation:
 
@@ -12,10 +19,11 @@ The CSV formatted results are dumped to the console.
 pipx install git+https://github.com/sweigmann/danalyze.git
 ```
 
+
 ## usage:
 
 ```bash
-danalyze [-h] [--version] dir1 dir2
+usage: danalyze [-h] [--outfile FILE] [--verbose] [--version] dir1 dir2
 
 Recursive differential analysis on files
 
@@ -24,15 +32,27 @@ positional arguments:
   dir2
 
 options:
-  -h, --help  show this help message and exit
-  --version   show program's version number and exit
+  -h, --help          show this help message and exit
+  --outfile, -o FILE  write results to FILE instead of stdout
+  --verbose, -v       can be given multiple times to increase verbosity
+  --version           show program's version number and exit
+
+Directories are traversed, but only real files are supported for evaluation. 
+Non-file objects such as links and unreadable files will be silently dismissed, 
+unless verbosity level is greater than zero.
 ```
+
 
 ## example:
 
 ```bash
-danalyze.py test/1 test/2
+danalyze -vv test/1/ test/2/
+WARNING:  LinksNotSupportedError: 'test/1/deadlink'
+WARNING:  LinksNotSupportedError: 'test/1/goodlink'
+ERROR:    PermissionError: [Errno 13] Permission denied: 'test/2/notreadable'
 ```
+
+### Result:
 
 ```csv
 filepath,file1_size,file2_size,file1_sha256,file2_sha256,file1_ssdeep,file2_ssdeep,ssdeep_score
