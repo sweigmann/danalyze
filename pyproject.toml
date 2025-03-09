@@ -26,7 +26,7 @@ version = {attr = "danalyze.danalyze.progver"}
 [project.urls]
 #Homepage = "https://example.com"
 #Documentation = "https://readthedocs.org"
-Repository = "https://github.com/sweigmann/danalyze.git"
+Repository = "https://codeberg.org/DFIR/danalyze.git"
 #"Bug Tracker" = "https://github.com/me/spam/issues"
 #Changelog = "https://github.com/sweigmann/danalyze/blob/main/CHANGELOG.md"
 

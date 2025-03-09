@@ -16,7 +16,7 @@ the hashes, are written to `stdout` or to a file if specified.
 ## installation:
 
 ```bash
-pipx install git+https://github.com/sweigmann/danalyze.git
+pipx install git+https://codeberg.org/DFIR/danalyze.git
 ```
 
 
