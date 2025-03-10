@@ -16,6 +16,7 @@ the hashes, are written to `stdout` or to a file if specified.
 ## installation:
 
 ```bash
+sudo apt install libfuzzy-dev
 pipx install git+https://codeberg.org/DFIR/danalyze.git
 ```
 
