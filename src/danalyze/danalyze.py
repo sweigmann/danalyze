@@ -29,7 +29,7 @@ import ssdeep
 from enum import IntEnum, StrEnum
 
 progname  = "danalyze"
-progver   = "0.3"
+progver   = "0.3.1"
 outfile   = None
 resfilter = None
 verbosity = 0
