@@ -26,12 +26,14 @@ import threading
 import hashlib
 import ssdeep
 
-from enum import IntEnum
+from enum import IntEnum, StrEnum
 
 progname  = "danalyze"
-progver   = "0.2.2"
+progver   = "0.3"
 outfile   = None
+resfilter = None
 verbosity = 0
+
 
 class ERRLVL(IntEnum):
     CRIT  = 0
@@ -40,6 +42,13 @@ class ERRLVL(IntEnum):
     INFO  = 3
     DEBUG = 4
     INFNT = 100
+
+
+class RESFILTER(StrEnum):
+    NONE  = 'none'
+    SIZE  = 'size'
+    HASH  = 'hash'
+
 
 
 def printmsg(msg = '', errlvl = ERRLVL.INFNT):
@@ -110,23 +119,38 @@ def main():
     global progname
     global progver
     global outfile
+    global filter
     global verbosity
-    parser = argparse.ArgumentParser(prog = progname,
-                                     description = "Recursive differential analysis on files",
-                                     epilog = "Directories are traversed, but only real files are supported for evaluation. Non-file objects such as links and unreadable files will be silently dismissed, unless verbosity level is greater than zero.")
+    parser = argparse.ArgumentParser(
+                        prog        = progname,
+                        description = "Recursive differential analysis on files",
+                        epilog      = "Directories are traversed, but only real files are supported for evaluation. Non-file objects such as links and unreadable files will be silently dismissed, unless verbosity level is greater than zero."
+    )
     parser.add_argument("dir1", nargs=1, type=type_path)
     parser.add_argument("dir2", nargs=1, type=type_path)
-    parser.add_argument('--outfile', '-o', type=type_file, metavar="FILE", default=None, help="write results to FILE instead of stdout")
-    parser.add_argument('--verbose', '-v', action='count', default=0, help="can be given multiple times to increase verbosity")
-    parser.add_argument('--version', action='version', version='%(prog)s v' + progver)
+    parser.add_argument("--filter", "-f", choices=[RESFILTER.NONE, RESFILTER.SIZE, RESFILTER.HASH], default=RESFILTER.NONE,
+                        help="Omit files from results. \
+            " + RESFILTER.NONE + ": nothing is omitted (default). \
+            " + RESFILTER.SIZE + ": files having the same size but may differ in content will be omitted. \
+            " + RESFILTER.HASH + ": files having the same sha256 hash will be omitted."
+    )
+    parser.add_argument("--outfile", "-o", type=type_file, metavar="FILE", default=None, 
+                        help="write results to FILE instead of stdout"
+    )
+    parser.add_argument("--verbose", "-v", action="count", default=0, 
+                        help="can be given multiple times to increase verbosity"
+    )
+    parser.add_argument("--version", action="version", version="%(prog)s v" + progver)
     try:
         args = parser.parse_args()
+        assert(args.filter is not None)
     except Exception as expt:
         printmsg("%s: %s" % (type(expt).__name__, expt), ERRLVL.CRIT)
         sys.exit(2)
     dir1_prefix = args.dir1[0]
     dir2_prefix = args.dir2[0]
-    verbosity = args.verbose
+    resfilter   = args.filter
+    verbosity   = args.verbose
     try:
         outfile = open(args.outfile, "w") if args.outfile else None
     except Exception as expt:
@@ -156,15 +180,24 @@ def main():
         d1 = dict1.pop(f1)
         if f1 in dict2.keys():
             d2 = dict2.pop(f1)
-            result[f1] = {
-                'file1_size'  :   d1.get('size'),
-                'file2_size'  :   d2.get('size'),
-                'file1_sha256':   d1.get('sha256'),
-                'file2_sha256':   d2.get('sha256'),
-                'file1_ssdeep':   d1.get('ssdeep'),
-                'file2_ssdeep':   d2.get('ssdeep'),
-                'ssdeep_score':   str(ssdeep.compare(d1.get('ssdeep'), d2.get('ssdeep')))
-            }
+            # apply filter...
+            # hash:
+            if ((resfilter == RESFILTER.HASH) and (d1.get('sha256') == d2.get('sha256'))):
+                continue
+            # size:
+            elif ((resfilter == RESFILTER.SIZE) and (d1.get('size') == d2.get('size'))):
+                continue
+            # none:
+            else:
+                result[f1] = {
+                    'file1_size'  :   d1.get('size'),
+                    'file2_size'  :   d2.get('size'),
+                    'file1_sha256':   d1.get('sha256'),
+                    'file2_sha256':   d2.get('sha256'),
+                    'file1_ssdeep':   d1.get('ssdeep'),
+                    'file2_ssdeep':   d2.get('ssdeep'),
+                    'ssdeep_score':   str(ssdeep.compare(d1.get('ssdeep'), d2.get('ssdeep')))
+                }
         else:
             result[f1] = {
                 'file1_size'  :   d1.get('size'),
