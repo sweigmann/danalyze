@@ -1,0 +1,8 @@
+venv
+build
+dist
+src/danalyze.egg-info
+test/1
+test/2
+.idea
+

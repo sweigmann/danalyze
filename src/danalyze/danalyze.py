@@ -34,10 +34,12 @@ from enum import IntEnum, StrEnum
 
 # 3rd-party imports
 import ssdeep
+import ssdeeper
 
 # global variables
 progname = "danalyze"
-progver = "0.3.1"
+progver = "0.4"
+simalg = None
 outfile = None
 resfilter = None
 verbosity = 0
@@ -81,6 +83,7 @@ def printmsg(msg="", errlvl=ERRLVL.INFNT):
 # this function is run as threads.
 def hash_files(dir_prefix="", dir_dict=None):
     global verbosity
+    global simalg
     # define a buffer size of 32kb (2^15 bytes) for file reading operations
     bufsize = 2**15
     for root, dirs, files in os.walk(dir_prefix, topdown=True, followlinks=False):
@@ -101,7 +104,7 @@ def hash_files(dir_prefix="", dir_dict=None):
             relative_fpath = os.path.relpath(fpath, common_prefix)
             try:
                 hasher_sha256 = hashlib.sha256()
-                hasher_ssdeep = ssdeep.Hash()
+                hasher_ssdeep = simalg.Hash()
                 with open(fpath, "rb") as f:
                     chunk = f.read(bufsize)
                     while chunk:
@@ -142,6 +145,7 @@ def main():
     global progver
     global outfile
     global resfilter
+    global simalg
     global verbosity
     parser = argparse.ArgumentParser(
         prog=progname,
@@ -167,6 +171,13 @@ def main():
         + ": files having the same sha256 hash will be omitted.",
     )
     parser.add_argument(
+        "--simalg",
+        "-s",
+        choices=["ssdeep", "ssdeeper"],
+        default="ssdeep",
+        help="Select fuzzy hashing algorithm: original ssdeep (default) or ssdeeper",
+    )
+    parser.add_argument(
         "--outfile",
         "-o",
         type=type_file,
@@ -184,8 +195,11 @@ def main():
     parser.add_argument("--version", action="version", version="%(prog)s v" + progver)
     try:
         args = parser.parse_args()
-        # make sure we didn't mess up the code. filter metric MUST be defined. fail otherwise.
+        # make sure we didn't mess up the code. 
+        # filter metric MUST be defined. fail otherwise.
         assert args.filter is not None
+        # simalg algo MUST have been selected. fail otherwise.
+        assert args.simalg is not None
     except Exception as excpt:
         # we get here when anything is wrong with provided arguments. fail and exit.
         printmsg("%s: %s" % (type(excpt).__name__, excpt), ERRLVL.CRIT)
@@ -193,6 +207,14 @@ def main():
     dir1_prefix = args.dir1[0]
     dir2_prefix = args.dir2[0]
     resfilter = args.filter
+    if args.simalg == "ssdeep":
+        simalg = ssdeep
+    elif args.simalg == "ssdeeper":
+        simalg = ssdeeper
+    else:
+        simalg = None
+    # simalg algo MUST have been selected. fail otherwise.
+    assert(simalg is not None)
     verbosity = args.verbose
     try:
         outfile = open(args.outfile, "w") if args.outfile else None
@@ -251,7 +273,7 @@ def main():
                     "file1_ssdeep": d1.get("ssdeep"),
                     "file2_ssdeep": d2.get("ssdeep"),
                     "ssdeep_score": str(
-                        ssdeep.compare(d1.get("ssdeep"), d2.get("ssdeep"))
+                        simalg.compare(d1.get("ssdeep"), d2.get("ssdeep"))
                     ),
                 }
         else:
@@ -301,9 +323,9 @@ def main():
             "file2_size",
             "file1_sha256",
             "file2_sha256",
-            "file1_ssdeep",
-            "file2_ssdeep",
-            "ssdeep_score",
+            "file1_" + simalg.__name__,
+            "file2_" + simalg.__name__,
+            simalg.__name__ + "_score",
         ]
     )
     if outfile:
