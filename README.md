@@ -3,17 +3,21 @@
 **danalyze - recursive differential analysis on files**
 
 Given two directories, `danalyze` recursively analyzes all files
-(and only real files) within them and computes sizes, `sha256` and 
-`ssdeep` or `ssdeeper` hashes. 
+(and only real files) within them and computes sizes, `sha256` and
+`ssdeep` or `ssdeeper` hashes.
 
 The CSV formatted results are dumped to the console.
 
-Since `ssdeep` is about ten times slower than `sha256`, you may need 
+Since `ssdeep` is about ten times slower than `sha256`, you may need
 some patience when scanning larger directory trees.
 
-All runtime messages are written to `stderr`, while program output, 
+All runtime messages are written to `stderr`, while program output,
 the hashes, are written to `stdout` or to a file if specified.
 
+<img src="https://github.com/sweigmann/danalyze/actions/workflows/codeql-analysis.yml/badge.svg?branch=main">
+<img src="https://github.com/sweigmann/danalyze/actions/workflows/python-linux.yml/badge.svg?branch=main">
+<img src="https://github.com/sweigmann/danalyze/actions/workflows/debian.yml/badge.svg?branch=main">
+<img src="https://github.com/sweigmann/danalyze/actions/workflows/ubuntu.yml/badge.svg?branch=main">
 
 ## `ssdeep` and `ssdeeper`:
 

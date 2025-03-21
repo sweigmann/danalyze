@@ -1,3 +1,4 @@
+# flake8: noqa: E501
 # This is danalyze for differential image analysis.
 #   (C) Sebastian Weigmann, 2025
 #   This software is released under:
@@ -38,7 +39,7 @@ import ssdeeper
 
 # global variables
 progname = "danalyze"
-progver = "0.4"
+progver = "0.4.1"
 simalg = None
 outfile = None
 resfilter = None
@@ -195,7 +196,7 @@ def main():
     parser.add_argument("--version", action="version", version="%(prog)s v" + progver)
     try:
         args = parser.parse_args()
-        # make sure we didn't mess up the code. 
+        # make sure we didn't mess up the code.
         # filter metric MUST be defined. fail otherwise.
         assert args.filter is not None
         # simalg algo MUST have been selected. fail otherwise.
@@ -214,7 +215,7 @@ def main():
     else:
         simalg = None
     # simalg algo MUST have been selected. fail otherwise.
-    assert(simalg is not None)
+    assert simalg is not None
     verbosity = args.verbose
     try:
         outfile = open(args.outfile, "w") if args.outfile else None

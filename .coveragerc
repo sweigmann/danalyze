@@ -1,0 +1,9 @@
+[run]
+branch = True
+source =
+    danalyze
+
+[paths]
+source =
+   src/danalyze
+   .tox/*/lib/python*/site-packages/danalyze

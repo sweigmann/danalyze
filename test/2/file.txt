@@ -1,0 +1,1 @@
+Also called fuzzy hashes, CTPH can match inputs that have homologies.
