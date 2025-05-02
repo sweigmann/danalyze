@@ -16,7 +16,6 @@ jobs:
     container:
       image: ${{ matrix.container }}
     steps:
-      - uses: actions/checkout@v4
       - name: Install dependencies
         run: |
           apt-get update && \
@@ -33,6 +32,8 @@ jobs:
             automake \
             autoconf \
             libtool
+      - name: Checkout Repository
+        uses: actions/checkout@v4
       - name: Build
         run: |
           python3 -m venv venv && \
