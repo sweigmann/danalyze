@@ -18,6 +18,7 @@ the hashes, are written to `stdout` or to a file if specified.
 <img src="https://github.com/sweigmann/danalyze/actions/workflows/python-linux.yml/badge.svg?branch=main">
 <img src="https://github.com/sweigmann/danalyze/actions/workflows/debian.yml/badge.svg?branch=main">
 <img src="https://github.com/sweigmann/danalyze/actions/workflows/ubuntu.yml/badge.svg?branch=main">
+<img src="https://img.shields.io/github/downloads/sweigmann/danalyze/total">
 
 ## `ssdeep` and `ssdeeper`:
 
