@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        container: ["debian:12"]
+        container: ["debian:oldstable", "debian:stable"]
     container:
       image: ${{ matrix.container }}
     steps:

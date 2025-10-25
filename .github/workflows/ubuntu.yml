@@ -12,7 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        container: ["ubuntu:24.04"]
+        # ubuntu:latest  --> most recent LTS release
+        # ubuntu:rolling --> most recent release
+        container: ["ubuntu:latest", "ubuntu:rolling"]
     container:
       image: ${{ matrix.container }}
     steps:
