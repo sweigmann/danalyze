@@ -39,7 +39,7 @@ import ssdeeper
 
 # global variables
 progname = "danalyze"
-progver = "0.4.1"
+progver = "0.4.2"
 simalg = None
 outfile = None
 resfilter = None
