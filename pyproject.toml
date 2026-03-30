@@ -21,8 +21,8 @@ classifiers = [
 ]
 dependencies = [
   #"ssdeep>=3.4.1"
-  "ssdeep@git+https://github.com/DinoTools/python-ssdeep#egg=3.4.1",
-  "ssdeeper@git+https://codeberg.org/DFIR/python-ssdeeper#egg=3.5.1"
+  "ssdeep@git+https://codeberg.org/DFIR/python-ssdeep#egg=3.4.2",
+  "ssdeeper@git+https://codeberg.org/DFIR/python-ssdeeper#egg=3.5.4"
 ]
 requires-python = ">=3.8"
 
