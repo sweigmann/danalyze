@@ -27,7 +27,7 @@ jobs:
             libffi-dev \
             libfuzzy-dev \
             pipx
-      - name: Install project tp pipx
+      - name: Install project to pipx
         run: pipx install .
       - name: Run danalyze
         run: danalyze --help
